@@ -13,7 +13,6 @@ CFLAGS += -O2
 
 ######
 
-LDFLAGS :=
 LDFLAGS += -lgc
 
 ######
@@ -26,29 +25,32 @@ SOURCES_SATS += \
 
 
 SOURCES_DATS += \
-  01_01.dats \
-  01_02.dats
 
-######
 
-MYTARGET=01_01 \
-	 01_02
+#######
 
-######
-#
-MYPORTDIR=MYPORTDIR
-#
-#MYPORTCPP=MYPORTCPP
-#
-######
+RMF = rm -rf
 
-include $(PATSHOME)/share/atsmake-post.mk
+#######
 
-######
+TARGET = 01_01 01_02
 
-cleanall:: ; $(RMF) $(MYPORTDIR)/*
-cleanats:: ; $(RMF) $(MYPORTDIR)/*_?ats.o
-cleanats:: ; $(RMF) $(MYPORTDIR)/*_?ats.c
+all:: $(TARGET)
+
+%: %.dats
+	$(PATSCC) $(INCLUDE) $(INCLUDE_ATS) \
+	    $(MALLOCFLAG) \
+	    $(CFLAGS) $(LDFLAGS) -o $@ $<
+
+clean:
+	$(RMF) *_?ats.c
+	$(RMF) *_?ats.o
+	$(RMF) $(TARGET)
+
+
+
+
+
 
 ######
 
