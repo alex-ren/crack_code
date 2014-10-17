@@ -3,9 +3,9 @@
 #include "share/atspre_define.hats"
 #include "share/atspre_staload.hats"
 
-extern castfn i2sz {n: int} (x: int n): size_t n
-extern castfn c2i (c: char): [i: nat | i <= 255] int i
-extern castfn s02s (s: string): [n: nat] string n
+staload "prelude/SATS/unsafe.sats"
+
+staload _ = "prelude/DATS/arrayref.dats"
 
 /*
  * string type has length information
@@ -13,7 +13,7 @@ extern castfn s02s (s: string): [n: nat] string n
  */
 fun is_unique_char2 {n: nat} (str: string n): bool = let
   // rec of type arrszref has length information
-  val record = arrszref_make_elt<bool> (i2sz(256), false)
+  val record = arrszref_make_elt<bool> (cast{size_t}(256), false)
   val n = string_length (str)
 
   fun loop {n, i: nat | i < n} (
@@ -23,7 +23,7 @@ fun is_unique_char2 {n: nat} (str: string n): bool = let
     i: size_t i): bool = let
     // val c = string_get_at_size(str, i)
     val c = str[i]
-    val loc = c2i (c)
+    val loc = cast{int} (c)
     val b = record[loc]
   in
     if b then ~b else let
@@ -35,7 +35,7 @@ fun is_unique_char2 {n: nat} (str: string n): bool = let
   end
 in
   if (n = 0) then true
-  else loop (str, n, record, i2sz(0))
+  else loop (str, n, record, cast{size_t 0}(0))
 end
 
 /*
@@ -48,7 +48,7 @@ implement main (argc, argv) =
 if argc < 2 then 0
 else let
   val str0 = argv[1]
-  val str = s02s (str0)
+  val str = cast{[n:nat] string n}(str0)
   val b = is_unique_char2 (str)
   val () = if b then println! (str0, " is unique.")
            else println! (str0, " is not unique.")
