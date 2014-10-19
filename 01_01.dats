@@ -35,6 +35,7 @@ fun is_unique_char2 {n: nat} (str: string n): bool = let
   end
 in
   if (n = 0) then true
+  else if (n > 256) then false
   else loop (str, n, record, cast{size_t 0}(0))
 end
 
